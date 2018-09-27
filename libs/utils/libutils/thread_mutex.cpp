@@ -90,6 +90,7 @@ MutexPool::~MutexPool()
 		delete mutexes_[k];
 		mutexes_[k] = 0;
 	}
+	delete[] mutexes_;
 }
 
 MutexPool *MutexPool::instance()
