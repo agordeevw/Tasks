@@ -86,24 +86,22 @@ int main(int argc, char **argv)
         gpu::gpu_mem_32u buffer_result;
         buffer_result.resizeN(work_groups_count(n));
 
+        std::vector<unsigned int> results(work_groups_count(n));
         unsigned int sum;
         timer t;
         for (int iter = 0; iter < benchmarkingIters; ++iter) {
-            unsigned int values_count = n;
-            gpu::WorkSize work_size{ work_group_size, round_up_work_size(values_count) };
+            gpu::WorkSize work_size{ work_group_size, round_up_work_size(n) };
             ocl::LocalMem local_values{ sizeof(unsigned int) * work_group_size };
-            kernel.exec(work_size, buffer_data, buffer_result, local_values);
+            kernel.exec(work_size, buffer_data, n, buffer_result, local_values);
+
+            sum = 0;
+            buffer_result.readN(results.data(), results.size());
+            for (auto result : results)
+                sum += result;
+            EXPECT_THE_SAME(reference_sum, sum, "GPU result is wrong");
                      
             t.nextLap();
         }
-
-        sum = 0;
-        std::vector<unsigned int> results(work_groups_count(n));
-        buffer_result.readN(results.data(), results.size());
-        for (auto result : results)
-            sum += result;
-
-        EXPECT_THE_SAME(reference_sum, sum, "GPU result");
 
         std::cout << "GPU: " << t.lapAvg() << "+-" << t.lapStd() << " s" << std::endl;
         std::cout << "GPU: " << (n / 1000.0 / 1000.0) / t.lapAvg() << " millions/s" << std::endl;
