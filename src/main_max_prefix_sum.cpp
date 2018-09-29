@@ -142,8 +142,6 @@ int main(int argc, char **argv)
             gpu::gpu_mem_32i max_idx;
             max_idx.resizeN(1);
 
-            int max_sum;
-            int result;
             timer t;
             for (int iter = 0; iter < benchmarkingIters; ++iter) {
                 scan.exec(
@@ -174,11 +172,10 @@ int main(int argc, char **argv)
                         buffer_output, buffers_scanned_sums[0]);
                 }
 
-                max_sum = 0;
-                result = 0;
-
+                int max_sum = 0;
+                int result = 0;
                 
-                int initial_max_value = 0;
+                const int initial_max_value = 0;
                 max_value.writeN(&initial_max_value, 1);
 
                 get_max_value.exec(
@@ -189,7 +186,7 @@ int main(int argc, char **argv)
                 max_value.readN(&max_sum, 1);
 
                 if (max_sum > 0) {
-                    int initial_idx_value = round_up_work_size(n) + 1;
+                    const int initial_idx_value = round_up_work_size(n) + 1;
                     max_idx.writeN(&initial_idx_value, 1);
 
                     get_idx_of_max.exec(
