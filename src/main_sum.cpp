@@ -84,9 +84,8 @@ int main(int argc, char **argv)
         buffer_data.resizeN(n);
         buffer_data.writeN(as.data(), as.size());
         gpu::gpu_mem_32u buffer_result;
-        buffer_result.resizeN(work_groups_count(n));
+        buffer_result.resizeN(1);
 
-        std::vector<unsigned int> results(work_groups_count(n));
         unsigned int sum;
         timer t;
         for (int iter = 0; iter < benchmarkingIters; ++iter) {
@@ -94,12 +93,9 @@ int main(int argc, char **argv)
             ocl::LocalMem local_values{ sizeof(unsigned int) * work_group_size };
             kernel.exec(work_size, buffer_data, n, buffer_result, local_values);
 
-            sum = 0;
-            buffer_result.readN(results.data(), results.size());
-            for (auto result : results)
-                sum += result;
+            buffer_result.readN(&sum, 1);
             EXPECT_THE_SAME(reference_sum, sum, "GPU result is wrong");
-                     
+
             t.nextLap();
         }
 
