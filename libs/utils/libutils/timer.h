@@ -93,7 +93,7 @@ public:
         std::vector<double> laps = lapsFiltered();
         
         double sum = 0.0;
-        for (int i = 0; i < laps.size(); ++i) {
+        for (size_t i = 0; i < laps.size(); ++i) {
             sum += laps[i];
         }
         if (laps.size() > 0) {
@@ -110,7 +110,7 @@ public:
         std::vector<double> laps = lapsFiltered();
 
         double sum2 = 0.0;
-        for (int i = 0; i < laps.size(); ++i) {
+        for (size_t i = 0; i < laps.size(); ++i) {
             sum2 += laps[i] * laps[i];
         }
         if (laps.size() > 0) {
@@ -126,7 +126,7 @@ protected:
         std::vector<double> laps = laps_;
         std::sort(laps.begin(), laps.end());
 
-        unsigned int nlaps = laps.size();
+        size_t nlaps = laps.size();
         if (nlaps >= 5) {
             // Removing last 20% of measures
             laps.erase(laps.end() - nlaps/5, laps.end());

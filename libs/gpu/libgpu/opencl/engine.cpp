@@ -261,7 +261,7 @@ cl_mem OpenCLEngine::createBuffer(cl_mem_flags flags, size_t size)
 	int test_data = 239;
 	try {
 		writeBuffer(res, CL_TRUE, 0, data_size, &test_data);
-	} catch (ocl_exception& e) {
+	} catch (const ocl_exception&) {
 		releaseMemObject(res);
 		throw;
 	}
@@ -418,7 +418,7 @@ ProgramBinaries::ProgramBinaries(const char *source_code, size_t source_code_len
 
 const VersionedBinary* ProgramBinaries::getBinary(const std::shared_ptr<OpenCLEngine> &cl) const
 {
-	for (int i = 0; i < binaries_.size(); ++i) {
+	for (size_t i = 0; i < binaries_.size(); ++i) {
 		const VersionedBinary* binary = &binaries_[i];
 
 		if (binary->deviceAddressBits() && binary->deviceAddressBits() != cl->deviceAddressBits())
@@ -526,7 +526,7 @@ OpenCLKernel *KernelSource::getKernel(const std::shared_ptr<OpenCLEngine> &cl, b
 			std::string binaries_string((std::istreambuf_iterator<char>(program_binaries_file)), std::istreambuf_iterator<char>());
 
 			loaded_from_file_binaries = std::vector<unsigned char>(binaries_string.size());
-			for (int i = 0; i < binaries_string.size(); ++i) {
+			for (size_t i = 0; i < binaries_string.size(); ++i) {
 				loaded_from_file_binaries[i] = (unsigned char) binaries_string[i];
 			}
 			cachedCompiledBinary = &loaded_from_file_binaries;

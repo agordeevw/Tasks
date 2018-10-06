@@ -61,7 +61,7 @@ T gpu::deviceTypeMin() {
 unsigned int gpu::calcNChunk(size_t n, size_t group_size, size_t max_size)
 {
 	if (n == 0)
-		return group_size;
+		return static_cast<unsigned int>(group_size);
 
 	size_t work_parts_n = (n + max_size - 1) / max_size;
 	size_t exec_n = (n + work_parts_n - 1) / work_parts_n;

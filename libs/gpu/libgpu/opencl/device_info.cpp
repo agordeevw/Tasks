@@ -188,7 +188,7 @@ void DeviceInfo::initExtensions(cl_platform_id platform_id, cl_device_id device_
 		}
 
 		std::string extension = "";
-		for (int i = 0; i <= buffer.size(); i++) {
+		for (size_t i = 0; i <= buffer.size(); i++) {
 			if (i == buffer.size() || buffer[i] == ' ') {
 				if (extension.length() > 0) {
 					extensions.insert(extension);

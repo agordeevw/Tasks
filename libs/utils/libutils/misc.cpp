@@ -48,7 +48,7 @@ gpu::Device gpu::chooseGPUDevice(int argc, char **argv)
 		throw std::runtime_error("No OpenCL devices found!");
 	} else {
 		std::cout << "OpenCL devices:" << std::endl;
-		for (int i = 0; i < devices.size(); ++i) {
+		for (size_t i = 0; i < devices.size(); ++i) {
 			std::cout << "  Device #" << i << ": ";
 			gpu::printDeviceInfo(devices[i]);
 		}

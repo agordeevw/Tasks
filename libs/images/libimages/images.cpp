@@ -47,7 +47,7 @@ Image<T>::Image(const char *const filename) {
         CImg<T> img(filename);
         CImgWrapper<T> wrapper(img);
         fromCImg(wrapper);
-    } catch (CImgIOException& e) {
+    } catch (const CImgIOException&) {
         width = 0;
         height = 0;
         cn = 0;
@@ -64,7 +64,7 @@ Image<T>::Image(const std::string& filename) {
         CImg<T> img(filename.c_str());
         CImgWrapper<T> wrapper(img);
         fromCImg(wrapper);
-    } catch (CImgIOException& e) {
+    } catch (const CImgIOException&) {
         width = 0;
         height = 0;
         cn = 0;
