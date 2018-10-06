@@ -70,8 +70,37 @@ int main(int argc, char **argv)
       as_gpu.writeN(as.data(), M*K);
       bs_gpu.writeN(bs.data(), K*N);
 
-      ocl::Kernel matrix_multiplication_kernel(matrix_multiplication, matrix_multiplication_length, "matrix_multiplication");
-      matrix_multiplication_kernel.compile();
+      bool print_log;
+#ifdef NDEBUG
+      print_log = false;
+#else
+      print_log = true;
+#endif
+
+      std::string defines;
+      defines += " -DTILE_SIZE=";
+      defines += std::to_string(TILE_SIZE);
+      ocl::Kernel matrix_multiplication_kernel(matrix_multiplication, matrix_multiplication_length, "matrix_multiplication", defines);
+      matrix_multiplication_kernel.compile(print_log);
+
+      std::string trivial_defines = defines;
+      trivial_defines += " -DTRIVIAL_SOLUTION";
+      ocl::Kernel matrix_multiplication_kernel_trivial(matrix_multiplication, matrix_multiplication_length, "matrix_multiplication", trivial_defines);
+      matrix_multiplication_kernel_trivial.compile(print_log);
+
+      {
+        timer t;
+        for (int iter = 0; iter < benchmarkingIters; ++iter) {
+          matrix_multiplication_kernel_trivial.exec(
+            gpu::WorkSize(TILE_SIZE, TILE_SIZE, N, M),
+            as_gpu, bs_gpu, cs_gpu, M, K, N);
+
+          t.nextLap();
+        }
+        std::cout << "Trivial solution (unchecked, only for timings!)\n";
+        std::cout << "GPU: " << t.lapAvg() << "+-" << t.lapStd() << " s" << std::endl;
+        std::cout << "GPU: " << gflops / t.lapAvg() << " GFlops" << std::endl;
+      }
 
       {
           timer t;
@@ -82,6 +111,7 @@ int main(int argc, char **argv)
 
               t.nextLap();
           }
+          std::cout << "Local memory solution\n";
           std::cout << "GPU: " << t.lapAvg() << "+-" << t.lapStd() << " s" << std::endl;
           std::cout << "GPU: " << gflops / t.lapAvg() << " GFlops" << std::endl;
       }
