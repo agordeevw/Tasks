@@ -19,8 +19,8 @@ int main(int argc, char **argv)
     context.activate();
 
     int benchmarkingIters = 10;
-    unsigned int M = 1 << 13;
-    unsigned int K = 1 << 13;
+    unsigned int M = 1 << 12;
+    unsigned int K = 1 << 12;
 
     std::vector<float> as(M*K, 0);
     std::vector<float> as_t(M*K, 0);
