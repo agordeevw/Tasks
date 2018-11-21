@@ -107,7 +107,7 @@ int main(int argc, char **argv)
         exclusive_scan_post_kernel.compile();
 
         timer t;
-        for (int iter = 0; iter < 1; ++iter) {
+        for (int iter = 0; iter < benchmarkingIters; ++iter) {
             as_gpu.writeN(as.data(), n);
 
             t.restart(); // Запускаем секундомер после прогрузки данных чтобы замерять время работы кернела, а не трансфер данных
